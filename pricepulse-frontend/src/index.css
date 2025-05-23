@@ -1,0 +1,28 @@
+:root {
+  --color-light:rgb(102, 94, 94);     /* background and text */
+  --color-beige: #EAE4D5;     /* cards and inputs background */
+  --color-olive: #B6B09F;     /* borders, highlights */
+  --color-black: #000000;     /* main text */
+  
+  --app-bg: var(--color-light);
+  --text-color: var(--color-black);
+  --card-bg: var(--color-beige);
+  --input-bg: var(--color-beige);
+  --input-border: var(--color-olive);
+  --button-bg: var(--color-olive);
+  --button-text: var(--color-light);
+}
+
+body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+
+  background-color: var(--app-bg);
+  color: var(--text-color);
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
