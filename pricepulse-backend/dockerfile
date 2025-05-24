@@ -1,0 +1,18 @@
+# Use Playwright's base image with all dependencies preinstalled
+FROM mcr.microsoft.com/playwright:v1.43.1-jammy
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of your app
+COPY . .
+
+# Expose the port Render uses
+EXPOSE 5000
+
+# Start the app
+CMD ["node", "index.js"]
