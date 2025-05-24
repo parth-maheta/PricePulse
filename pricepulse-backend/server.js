@@ -7,7 +7,13 @@ const productRoutes = require("./routes/productRoutes");
 const alertRoutes = require("./routes/alertRoutes");
 const app = express();
 
-app.use(cors());
+// Replace this:
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
 app.use(express.json());
 
 // Health check route
@@ -16,9 +22,9 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-
 app.use("/api/products", productRoutes);
 app.use("/api/alerts", alertRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 // MongoDB connection and server start
