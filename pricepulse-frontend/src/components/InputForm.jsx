@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import "./InputForm.css";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function InputForm({ onProductAdded }) {
   const [url, setUrl] = useState("");
   const [targetPrice, setTargetPrice] = useState("");
@@ -16,16 +18,14 @@ export default function InputForm({ onProductAdded }) {
     setLoading(true);
 
     try {
-      // 1. Track product (required)
-      const res = await axios.post("http://localhost:5000/api/products", {
-        url,
-      });
+      // 1. Track product
+      const res = await axios.post(`${BASE_URL}/api/products`, { url });
       onProductAdded(res.data);
       const product = res.data;
 
       // 2. If alert is set, schedule alert
       if (targetPrice && email) {
-        await axios.post("http://localhost:5000/api/alerts/create", {
+        await axios.post(`${BASE_URL}/api/alerts/create`, {
           productUrl: product.url,
           targetPrice,
           userEmail: email,

@@ -5,14 +5,16 @@ import axios from "axios";
 import "./App.css";
 import "./components/Product.css";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function App() {
   const [products, setProducts] = useState([]);
-  const [alerts, setAlerts] = useState([]); // <-- new
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products");
+        const res = await axios.get(`${BASE_URL}/api/products`);
         setProducts(res.data);
       } catch (err) {
         console.error("Error fetching products", err);
@@ -21,7 +23,7 @@ function App() {
 
     const fetchAlerts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/alerts");
+        const res = await axios.get(`${BASE_URL}/api/alerts`);
         setAlerts(res.data);
       } catch (err) {
         console.error("Error fetching alerts", err);
@@ -29,7 +31,7 @@ function App() {
     };
 
     fetchProducts();
-    fetchAlerts(); // <-- new
+    fetchAlerts();
   }, []);
 
   const handleProductAdded = (newProduct) => {
@@ -59,7 +61,6 @@ function App() {
         ))
       )}
 
-      {/* ALERTS SECTION */}
       <h2>Price Drop Alerts</h2>
       {alerts.length === 0 ? (
         <p>No alerts scheduled.</p>
