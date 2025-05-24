@@ -3,10 +3,10 @@ const router = express.Router();
 
 const {
   trackProduct,
-  getAllProducts, // <-- add this
+  getAllProducts,
 } = require("../controllers/ProductController");
 
 router.post("/", trackProduct);
-router.get("/", getAllProducts); // <-- add this route
+router.get("/", getAllProducts);
 
 module.exports = router;

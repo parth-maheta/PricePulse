@@ -21,12 +21,11 @@ function startScheduler() {
             product.priceHistory.push({ price: scrapedData.price });
             product.lastChecked = new Date();
             await product.save();
-            console.log(`📉 Updated price for: ${product.title}`);
+            console.log(` Updated price for: ${product.title}`);
           } else {
-            console.log(`ℹ️ Price unchanged for: ${product.title}`);
+            console.log(`Price unchanged for: ${product.title}`);
           }
 
-          // Check alerts for this product
           const alerts = await Alert.find({
             productUrl: product.url,
             alertSent: false,
@@ -46,25 +45,25 @@ function startScheduler() {
                 alert.alertSent = true;
                 await alert.save();
                 console.log(
-                  `📧 Alert sent to ${alert.userEmail} for ${product.title}`
+                  ` Alert sent to ${alert.userEmail} for ${product.title}`
                 );
               } else {
-                console.warn(`⚠️ Email failed for ${alert.userEmail}`);
+                console.warn(` Email failed for ${alert.userEmail}`);
               }
             }
           }
         } catch (error) {
           console.error(
-            `❌ Error updating product ${product.url}:`,
+            ` Error updating product ${product.url}:`,
             error.message
           );
         }
       }
     } catch (err) {
-      console.error("❌ Error fetching products:", err.message);
+      console.error(" Error fetching products:", err.message);
     }
 
-    console.log("✅ Scheduled job finished");
+    console.log(" Scheduled job finished");
   });
 }
 

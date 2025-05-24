@@ -31,11 +31,11 @@ async function sendPriceDropEmail(
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Email sent to ${to} for product ${productName}`);
+    console.log(` Email sent to ${to} for product ${productName}`);
     return true;
   } catch (error) {
     console.error(
-      "❌ Failed to send email:",
+      " Failed to send email:",
       error?.response?.body || error.message
     );
     return false;

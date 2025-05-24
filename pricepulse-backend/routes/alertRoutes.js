@@ -13,7 +13,6 @@ router.post("/create", async (req, res) => {
   }
 
   try {
-    // Save alert in DB
     const alert = new Alert({
       productUrl,
       targetPrice,

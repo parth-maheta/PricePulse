@@ -8,15 +8,14 @@ const alertSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: function (email) {
-        // Basic email regex
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       },
       message: (props) => `${props.value} is not a valid email address!`,
     },
   },
   alertSent: { type: Boolean, default: false },
-  productName: { type: String }, // optional, for email
-  productImage: { type: String }, // optional, for email
+  productName: { type: String },
+  productImage: { type: String },
 });
 
 module.exports = mongoose.model("Alert", alertSchema);

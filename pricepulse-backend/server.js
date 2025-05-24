@@ -7,7 +7,6 @@ const productRoutes = require("./routes/productRoutes");
 const alertRoutes = require("./routes/alertRoutes");
 const app = express();
 
-// Replace this:
 app.use(
   cors({
     origin: "*",
@@ -16,7 +15,6 @@ app.use(
 
 app.use(express.json());
 
-// Health check route
 app.get("/", (req, res) => {
   res.send("PricePulse backend is running");
 });
@@ -31,8 +29,8 @@ const PORT = process.env.PORT || 5000;
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB connected");
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+    console.log(" MongoDB connected");
+    app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
     startScheduler();
   })
-  .catch((err) => console.log("❌ DB Error:", err));
+  .catch((err) => console.log(" DB Error:", err));

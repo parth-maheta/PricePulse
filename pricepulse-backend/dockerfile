@@ -1,16 +1,12 @@
-# Use the official Playwright base image for version 1.52.0
+
 FROM mcr.microsoft.com/playwright:v1.52.0-jammy
 
-# Set working directory
 WORKDIR /app
 
-# Copy your application code
 COPY . .
 
-# Install dependencies
 RUN npm install
 
-# Expose the port your app runs on
 EXPOSE 5000
 
 # Start your app
