@@ -103,20 +103,20 @@ export default function LandingPage() {
           {[
             {
               title: "1. Add Product",
-              desc: "Paste an Amazon product URL to start tracking.",
+              desc: "Paste an Amazon product URL to view the product and start tracking the price.",
             },
             {
               title: "2. Set Target Price",
-              desc: "Optionally enter a target price and your email to get notified.",
+              desc: "Enter a target price and your email to get notified when the price drops below it.",
             },
             {
-              title: "3. Get Notified",
-              desc: "We track the price and alert you when it drops.",
+              title: "3. Get Notified on Email",
+              desc: "We monitor the price and alert you when it drops below your target.",
             },
           ].map((step, i) => (
             <div
               key={step.title}
-              className="p-5 bg-white rounded-xl shadow border border-purple-200 transition-all hover:shadow-lg hover:scale-[1.02]"
+              className="p-5 bg-off-white rounded-xl shadow border border-purple-300 transition-all hover:shadow-lg hover:scale-[1.02]"
               data-aos="zoom-in"
               data-aos-delay={i * 100}
             >
@@ -182,7 +182,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="text-center py-6 text-xs sm:text-sm text-gray-500 px-2">
-        © {new Date().getFullYear()} PricePulse. Built with 💜 by Your Name.
+        © {new Date().getFullYear()} PricePulse. Built with 💜 by Parth.
       </footer>
     </div>
   );

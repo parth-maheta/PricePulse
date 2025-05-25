@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom"; // <-- import useLocation and Link
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../assets/logo.png";
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // <-- get current location
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   const scrollLinkClass =
     "cursor-pointer text-indigo-700 hover:text-purple-700 font-medium px-3 py-2 transition-colors";
+
+  // Paths where Home link should show
+  const showHomeLink = ["/tracked-products", "/track-new"].includes(
+    location.pathname
+  );
 
   return (
     <nav className="bg-white shadow-md fixed top-0 w-full z-50">
@@ -28,6 +35,11 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6">
+          {showHomeLink && (
+            <Link to="/" className={scrollLinkClass}>
+              Home
+            </Link>
+          )}
           <ScrollLink
             to="how-it-works"
             smooth
@@ -54,7 +66,6 @@ export default function Navbar() {
           >
             GitHub
           </a>
-          {/* Buttons removed */}
         </div>
 
         {/* Mobile Menu Icon */}
@@ -72,6 +83,15 @@ export default function Navbar() {
       {/* Mobile Menu Dropdown */}
       {menuOpen && (
         <div className="md:hidden bg-white shadow-md border-t border-indigo-100 px-4 pb-4">
+          {showHomeLink && (
+            <Link
+              to="/"
+              className={scrollLinkClass + " block"}
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+          )}
           <ScrollLink
             to="how-it-works"
             smooth
@@ -100,7 +120,6 @@ export default function Navbar() {
           >
             GitHub
           </a>
-          {/* Buttons removed */}
         </div>
       )}
     </nav>

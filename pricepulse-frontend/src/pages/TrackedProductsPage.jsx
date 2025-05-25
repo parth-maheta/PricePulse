@@ -6,26 +6,29 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function ProductCard({ product }) {
   return (
-    <div className="bg-white shadow-lg rounded-xl p-6 hover:shadow-indigo-300 transition-shadow duration-300">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6">
+    <div className="bg-white shadow-lg rounded-xl p-6 hover:shadow-indigo-300 transition-shadow duration-300 flex flex-col justify-between h-full">
+      {/* Image & Text Section */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:gap-6">
         <img
           src={product.image}
           alt={product.title}
-          className="w-32 h-32 object-contain mx-auto sm:mx-0 rounded-md"
+          className="w-24 h-24 sm:w-32 sm:h-32 object-contain mx-auto sm:mx-0 rounded-md flex-shrink-0"
         />
-        <div className="flex-1 mt-4 sm:mt-0">
-          <h2 className="text-xl font-semibold text-indigo-700 mb-1">
+        <div className="flex-1 mt-4 sm:mt-0 min-w-0">
+          <h2 className="text-xl font-semibold text-indigo-700 mb-2 break-words">
             {product.title}
           </h2>
           <p className="text-indigo-600 font-bold text-lg mb-1">
             Current Price: ₹{product.currentPrice}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 break-words">
             Last Checked: {new Date(product.lastChecked).toLocaleString()}
           </p>
         </div>
       </div>
-      <div className="mt-6">
+
+      {/* Price History */}
+      <div className="mt-6 overflow-x-auto">
         <h3 className="font-semibold text-lg mb-2 text-indigo-700">
           Price History
         </h3>
@@ -37,14 +40,14 @@ function ProductCard({ product }) {
 
 function AlertCard({ alert }) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-indigo-200 transition-shadow duration-200">
+    <div className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-indigo-200 transition-shadow duration-200 h-full">
       <img
         src={alert.productImage}
         alt={alert.productName}
-        className="w-20 h-20 object-contain rounded-md"
+        className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-md mx-auto sm:mx-0"
       />
       <div>
-        <h3 className="text-lg font-semibold text-indigo-700">
+        <h3 className="text-lg font-semibold text-indigo-700 break-words">
           {alert.productName}
         </h3>
         <p className="text-gray-700 text-sm">
@@ -167,7 +170,7 @@ export default function TrackedProductsPage() {
               No products being tracked yet.
             </p>
           ) : (
-            <div className="space-y-10">
+            <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
               {products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
@@ -189,7 +192,7 @@ export default function TrackedProductsPage() {
               No alerts scheduled.
             </p>
           ) : (
-            <div className="space-y-6">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
               {alerts.map((alert) => (
                 <AlertCard key={alert._id} alert={alert} />
               ))}

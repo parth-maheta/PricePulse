@@ -1,4 +1,3 @@
-// Accepts onProductTracked instead of onProductAdded
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
@@ -54,12 +53,9 @@ export default function InputForm({ onProductTracked }) {
     try {
       const res = await axios.post(`${BASE_URL}/api/products`, { url });
       const product = res.data;
-
-      // Pass product up to parent
       if (onProductTracked) {
         onProductTracked(product);
       }
-
       if (targetPrice && email) {
         await axios.post(`${BASE_URL}/api/alerts/create`, {
           productUrl: product.url,
@@ -69,7 +65,6 @@ export default function InputForm({ onProductTracked }) {
           productImage: product.image,
         });
       }
-
       toast.success("Product tracking added successfully!");
       setUrl("");
       setTargetPrice("");
