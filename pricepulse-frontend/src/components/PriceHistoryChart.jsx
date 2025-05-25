@@ -5,29 +5,48 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  Title,
   Tooltip,
   Legend,
-  TimeScale,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import "chartjs-adapter-date-fns";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  Title,
   Tooltip,
-  Legend,
-  TimeScale
+  Legend
 );
 
-export default function PriceHistoryChart({ data }) {
-  if (!data || data.length === 0) return <p>No price history to show.</p>;
+function PriceHistoryChart({ data }) {
+  if (!data || data.length === 0) {
+    return <p className="text-gray-500">No price history available.</p>;
+  }
 
-  // Prepare labels (dates) and prices
-  const labels = data.map((item) => new Date(item.checkedAt));
-  const prices = data.map((item) => item.price);
+  const sortedData = [...data].sort(
+    (a, b) => new Date(a.checkedAt) - new Date(b.checkedAt)
+  );
+
+  const labels = sortedData.map((point) => {
+    try {
+      if (!point.checkedAt) throw new Error("Missing date");
+      const parsedDate = new Date(point.checkedAt);
+      if (isNaN(parsedDate)) throw new Error("Invalid date format");
+      return parsedDate.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    } catch (err) {
+      console.warn("Date parse error:", point.checkedAt);
+      return "Invalid Date";
+    }
+  });
+
+  const prices = sortedData.map((point) => point.price);
 
   const chartData = {
     labels,
@@ -36,55 +55,79 @@ export default function PriceHistoryChart({ data }) {
         label: "Price (₹)",
         data: prices,
         fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
+        borderColor: "#7c3aed",
+        backgroundColor: "#7c3aed",
         tension: 0.3,
-        pointRadius: 4,
-        pointHoverRadius: 6,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 3,
       },
     ],
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
     plugins: {
       legend: {
         display: true,
+        position: "top",
+        labels: {
+          color: "#4f46e5",
+          font: {
+            weight: "600",
+            size: 14,
+          },
+        },
       },
       tooltip: {
-        mode: "index",
-        intersect: false,
+        enabled: true,
         callbacks: {
           label: function (context) {
             return `₹${context.parsed.y}`;
           },
         },
       },
+      title: {
+        display: false,
+        text: "Price History",
+      },
     },
     scales: {
       x: {
-        type: "time",
-        time: {
-          unit: "day",
-          tooltipFormat: "PP p",
-          displayFormats: {
-            day: "MMM d",
-          },
+        ticks: {
+          color: "#4f46e5",
+          maxRotation: 45,
+          minRotation: 30,
+          maxTicksLimit: 8,
         },
-        title: {
-          display: true,
-          text: "Date",
+        grid: {
+          display: false,
         },
       },
       y: {
-        title: {
-          display: true,
-          text: "Price (₹)",
+        ticks: {
+          color: "#4f46e5",
+          beginAtZero: false,
+          callback: (value) => `₹${value}`,
         },
-        beginAtZero: false,
+        grid: {
+          borderDash: [5, 5],
+          color: "#ddd",
+        },
       },
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <div style={{ height: 180, width: "100%" }}>
+      <Line data={chartData} options={options} />
+    </div>
+  );
 }
+
+export default PriceHistoryChart;
