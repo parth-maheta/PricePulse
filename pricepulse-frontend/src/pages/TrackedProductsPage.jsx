@@ -26,8 +26,6 @@ function ProductCard({ product }) {
           </p>
         </div>
       </div>
-
-      {/* Price History */}
       <div className="mt-6 overflow-x-auto">
         <h3 className="font-semibold text-lg mb-2 text-indigo-700">
           Price History
@@ -40,21 +38,23 @@ function ProductCard({ product }) {
 
 function AlertCard({ alert }) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-indigo-200 transition-shadow duration-200 h-full">
+    <div className="bg-white shadow-lg rounded-xl p-6 hover:shadow-indigo-300 transition-shadow duration-300 flex flex-col sm:flex-row sm:items-start sm:gap-6 h-full">
       <img
         src={alert.productImage}
         alt={alert.productName}
-        className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-md mx-auto sm:mx-0"
+        className="w-32 h-32 object-contain rounded-md flex-shrink-0 mx-auto sm:mx-0"
       />
-      <div>
-        <h3 className="text-lg font-semibold text-indigo-700 break-words">
+      <div className="flex-1 mt-4 sm:mt-0 min-w-0">
+        <h3 className="text-xl font-semibold text-indigo-700 break-words">
           {alert.productName}
         </h3>
-        <p className="text-gray-700 text-sm">
+        <p className="text-indigo-600 font-bold text-lg break-words mt-1">
           Target Price: ₹{alert.targetPrice}
         </p>
-        <p className="text-gray-700 text-sm">Email: {alert.userEmail}</p>
-        <p className="text-sm">
+        <p className="text-gray-500 break-words mt-1">
+          Email: {alert.userEmail}
+        </p>
+        <p className="text-sm mt-1">
           Status:{" "}
           <span
             className={

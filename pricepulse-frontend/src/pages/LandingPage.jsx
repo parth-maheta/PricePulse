@@ -76,7 +76,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Smaller margin for the typewriter container */}
+      {/* the typewriter container */}
       <div className="mt-2 sm:mt-4 text-lg sm:text-xl font-semibold text-indigo-600 text-center min-h-[3rem] whitespace-pre-line leading-relaxed sm:leading-loose px-2 sm:px-0">
         <Typewriter
           words={messages}

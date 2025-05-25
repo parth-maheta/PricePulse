@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
-import { useNavigate, useLocation, Link } from "react-router-dom"; // <-- import useLocation and Link
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // <-- get current location
+  const location = useLocation();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   const scrollLinkClass =
     "cursor-pointer text-indigo-700 hover:text-purple-700 font-medium px-3 py-2 transition-colors";
-
-  // Paths where Home link should show
   const showHomeLink = ["/tracked-products", "/track-new"].includes(
     location.pathname
   );
