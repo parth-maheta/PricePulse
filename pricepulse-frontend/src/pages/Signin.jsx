@@ -25,7 +25,7 @@ export default function Signin() {
     try {
       const response = await signin(formData);
       signinUser(response.data);
-      navigate("/tracked-products");
+      navigate("/");
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Signin failed");
