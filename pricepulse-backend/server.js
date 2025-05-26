@@ -5,6 +5,8 @@ const cors = require("cors");
 const { startScheduler } = require("./scheduler");
 const productRoutes = require("./routes/productRoutes");
 const alertRoutes = require("./routes/alertRoutes");
+const authRoutes = require("./routes/auth");
+
 const app = express();
 
 app.use(
@@ -22,15 +24,15 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/alerts", alertRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-// MongoDB connection and server start
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log(" MongoDB connected");
-    app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
+    console.log("MongoDB connected");
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     startScheduler();
   })
-  .catch((err) => console.log(" DB Error:", err));
+  .catch((err) => console.log("DB Error:", err));

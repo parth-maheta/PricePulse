@@ -3,6 +3,7 @@ const { chromium } = require("playwright");
 async function scrapeAmazonProduct(url) {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
+
   try {
     await page.goto(url, { timeout: 60000, waitUntil: "domcontentloaded" });
 
@@ -21,17 +22,16 @@ async function scrapeAmazonProduct(url) {
       return { title, image, price };
     });
 
-    await browser.close();
-
     if (!productData.title || !productData.price) {
       throw new Error("Failed to scrape product data");
     }
 
     return productData;
   } catch (err) {
-    await browser.close();
     console.error("Scraping Error:", err.message);
     return null;
+  } finally {
+    await browser.close();
   }
 }
 

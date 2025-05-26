@@ -120,7 +120,10 @@ export default function TrackedProductsPage() {
     setLoadingProducts(true);
     setErrorProducts(null);
     try {
-      const res = await axios.get(`${BASE_URL}/api/products`);
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${BASE_URL}/api/products`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setProducts(res.data);
     } catch (err) {
       setErrorProducts("Failed to fetch products");
@@ -134,7 +137,10 @@ export default function TrackedProductsPage() {
     setLoadingAlerts(true);
     setErrorAlerts(null);
     try {
-      const res = await axios.get(`${BASE_URL}/api/alerts`);
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${BASE_URL}/api/alerts`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setAlerts(res.data);
     } catch (err) {
       setErrorAlerts("Failed to fetch alerts");

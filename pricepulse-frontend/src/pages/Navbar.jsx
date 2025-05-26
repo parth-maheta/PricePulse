@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../assets/logo.png";
+import AuthContext from "../components/AuthContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, signoutUser } = useContext(AuthContext);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -17,12 +19,21 @@ export default function Navbar() {
     location.pathname
   );
 
+  const handleLogout = () => {
+    signoutUser();
+    setMenuOpen(false);
+    navigate("/");
+  };
+
   return (
     <nav className="bg-white shadow-md fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
         {/* Logo */}
         <div
-          onClick={() => navigate("/")}
+          onClick={() => {
+            setMenuOpen(false);
+            navigate("/");
+          }}
           className="text-xl font-bold text-indigo-700 cursor-pointer flex items-center gap-1"
         >
           <img src={logo} alt="PricePulse Logo" className="h-8 w-auto" />
@@ -64,6 +75,27 @@ export default function Navbar() {
           >
             GitHub
           </a>
+
+          {/* 🔐 Auth Links (Desktop) */}
+          {!user ? (
+            <>
+              <Link to="/signin" className={scrollLinkClass}>
+                Sign In
+              </Link>
+              <Link to="/signup" className={scrollLinkClass}>
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleLogout}
+                className="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Icon */}
@@ -118,6 +150,52 @@ export default function Navbar() {
           >
             GitHub
           </a>
+
+          {/* 🔐 Auth Links (Mobile) */}
+          {!user ? (
+            <>
+              <Link
+                to="/signin"
+                className={scrollLinkClass + " block"}
+                onClick={() => setMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/signup"
+                className={scrollLinkClass + " block"}
+                onClick={() => setMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/tracked-products"
+                className={scrollLinkClass + " block"}
+                onClick={() => setMenuOpen(false)}
+              >
+                Tracked Products
+              </Link>
+              <Link
+                to="/track-new"
+                className={scrollLinkClass + " block"}
+                onClick={() => setMenuOpen(false)}
+              >
+                Track New
+              </Link>
+              <button
+                onClick={handleLogout}
+                className={
+                  scrollLinkClass +
+                  " block bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700 w-full text-left"
+                }
+              >
+                Logout
+              </button>
+            </>
+          )}
         </div>
       )}
     </nav>

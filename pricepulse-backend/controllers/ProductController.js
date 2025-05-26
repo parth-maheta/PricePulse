@@ -10,7 +10,8 @@ exports.trackProduct = async (req, res) => {
     const scrapedData = await scrapeAmazonProduct(url);
     if (!scrapedData) throw new Error("Failed to scrape product data");
 
-    let product = await Product.findOne({ url });
+    // Find product belonging to this user by url
+    let product = await Product.findOne({ url, userId: req.userId });
 
     if (product) {
       product.currentPrice = scrapedData.price;
@@ -18,10 +19,11 @@ exports.trackProduct = async (req, res) => {
       product.lastChecked = new Date();
       product.priceHistory.push({
         price: scrapedData.price,
-        checkedAt: new Date(),
+        checkedAt: new Date(), // keep checkedAt or rename to date if you want
       });
     } else {
       product = new Product({
+        userId: req.userId, // assign logged-in user ID here
         url,
         title: scrapedData.title,
         currentPrice: scrapedData.price,
@@ -39,9 +41,13 @@ exports.trackProduct = async (req, res) => {
     res.status(500).json({ error: "Failed to track product" });
   }
 };
+
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({ lastChecked: -1 });
+    // Fetch only products belonging to logged-in user
+    const products = await Product.find({ userId: req.userId }).sort({
+      lastChecked: -1,
+    });
     res.json(products);
   } catch (error) {
     console.error("Failed to fetch products:", error);

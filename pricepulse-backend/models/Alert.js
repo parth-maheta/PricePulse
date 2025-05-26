@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const alertSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // added userId
   productUrl: { type: String, required: true },
   targetPrice: { type: Number, required: true },
   userEmail: {
