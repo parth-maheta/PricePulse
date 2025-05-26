@@ -19,22 +19,8 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route
-            path="/tracked-products"
-            element={
-              <PrivateRoute>
-                <TrackedProductsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/track-new"
-            element={
-              <PrivateRoute>
-                <TrackNewProductPage />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/tracked-products" element={<TrackedProductsPage />} />
+          <Route path="/track-new" element={<TrackNewProductPage />} />
         </Routes>
       </Router>
     </AuthProvider>
