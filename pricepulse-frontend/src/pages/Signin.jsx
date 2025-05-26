@@ -11,7 +11,7 @@ export default function Signin() {
 
   useEffect(() => {
     if (user && user.token) {
-      navigate("/tracked-products");
+      navigate("/");
     }
   }, [user]);
 
