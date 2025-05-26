@@ -1,6 +1,5 @@
-import axios from "axios";
+// src/api/auth.js
+import axios from "./axios"; // using the custom axios instance
 
-const API_BASE = "https://pricepulse-qaeh.onrender.com/api/auth"; // replace with your backend URL
-
-export const signin = (data) => axios.post(`${API_BASE}/signin`, data);
-export const signup = (data) => axios.post(`${API_BASE}/signup`, data);
+export const signin = (data) => axios.post("/auth/signin", data);
+export const signup = (data) => axios.post("/auth/signup", data);

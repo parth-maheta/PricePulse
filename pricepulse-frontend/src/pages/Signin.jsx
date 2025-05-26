@@ -1,13 +1,19 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { signin } from "../api/auth"; // your auth.js api calls
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Added Link import
+import { signin } from "../api/auth";
 import AuthContext from "../components/AuthContext";
 
 export default function Signin() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { signinUser } = useContext(AuthContext);
+  const { user, signinUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user && user.token) {
+      navigate("/tracked-products");
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,10 +24,10 @@ export default function Signin() {
     setError(null);
     try {
       const response = await signin(formData);
-      // assuming your backend returns user data and token in response.data
       signinUser(response.data);
-      navigate("/tracked-products"); // redirect after signin
+      navigate("/tracked-products");
     } catch (err) {
+      console.error(err);
       setError(err.response?.data?.message || "Signin failed");
     }
   };
@@ -62,6 +68,14 @@ export default function Signin() {
         >
           Sign In
         </button>
+
+        {/* Added this link for redirect to Signup */}
+        <p className="mt-4 text-center text-gray-600">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-indigo-600 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </form>
     </div>
   );

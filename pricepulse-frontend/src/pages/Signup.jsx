@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Added Link import
 import { signup } from "../api/auth";
 import AuthContext from "../components/AuthContext";
 
@@ -11,7 +11,13 @@ export default function Signup() {
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { signinUser } = useContext(AuthContext);
+  const { user, signinUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user && user.token) {
+      navigate("/tracked-products");
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +31,7 @@ export default function Signup() {
       signinUser(response.data);
       navigate("/tracked-products");
     } catch (err) {
+      console.error(err);
       setError(err.response?.data?.message || "Signup failed");
     }
   };
@@ -74,6 +81,14 @@ export default function Signup() {
         >
           Sign Up
         </button>
+
+        {/* Added this link for redirect to Signin */}
+        <p className="mt-4 text-center text-gray-600">
+          Already have an account?{" "}
+          <Link to="/signin" className="text-indigo-600 hover:underline">
+            Sign In
+          </Link>
+        </p>
       </form>
     </div>
   );
