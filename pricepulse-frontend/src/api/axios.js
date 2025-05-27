@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://localhost:5000/api",
+  baseURL:
+    "https://pricepulse-qaeh.onrender.com/api" || "https://localhost:5000/api",
 });
 
 instance.interceptors.request.use((config) => {
