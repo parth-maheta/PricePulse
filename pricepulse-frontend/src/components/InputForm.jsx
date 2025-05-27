@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import AuthContext from "../components/AuthContext";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 export default function InputForm({ onProductTracked }) {
+  const { user } = useContext(AuthContext);
   const [url, setUrl] = useState("");
   const [targetPrice, setTargetPrice] = useState("");
   const [email, setEmail] = useState("");
@@ -51,20 +52,34 @@ export default function InputForm({ onProductTracked }) {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/products`, { url });
+      // Config with Authorization header
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      };
+
+      const res = await axios.post(`${BASE_URL}/api/products`, { url }, config);
       const product = res.data;
+
       if (onProductTracked) {
         onProductTracked(product);
       }
+
       if (targetPrice && email) {
-        await axios.post(`${BASE_URL}/api/alerts/create`, {
-          productUrl: product.url,
-          targetPrice: Number(targetPrice),
-          userEmail: email,
-          productName: product.title,
-          productImage: product.image,
-        });
+        await axios.post(
+          `${BASE_URL}/api/alerts/create`,
+          {
+            productUrl: product.url,
+            targetPrice: Number(targetPrice),
+            userEmail: email,
+            productName: product.title,
+            productImage: product.image,
+          },
+          config
+        );
       }
+
       toast.success("Product tracking added successfully!");
       setUrl("");
       setTargetPrice("");

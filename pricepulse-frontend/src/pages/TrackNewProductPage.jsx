@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputForm from "../components/InputForm";
 import PriceHistoryChart from "../components/PriceHistoryChart";
 import axios from "axios";
+import AuthContext from "../components/AuthContext";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 export default function TrackNewProductPage() {
+  const { user } = useContext(AuthContext);
   const [trackedProduct, setTrackedProduct] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [loadingAlerts, setLoadingAlerts] = useState(false);
@@ -15,9 +17,13 @@ export default function TrackNewProductPage() {
     setLoadingAlerts(true);
 
     try {
-      const res = await axios.get(`${BASE_URL}/api/alerts`, {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
         params: { productUrl: product.url },
-      });
+      };
+      const res = await axios.get(`${BASE_URL}/api/alerts`, config);
       setAlerts(res.data.alerts || []);
     } catch (error) {
       console.error("Failed to fetch alerts:", error);

@@ -1,5 +1,8 @@
-// src/api/auth.js
-import axios from "./axios"; // using the custom axios instance
+import axios from "axios";
 
-export const signin = (data) => axios.post("/auth/signin", data);
-export const signup = (data) => axios.post("/auth/signup", data);
+const API = axios.create({
+  baseURL: "http://localhost:5000", // for local testing
+});
+
+export const signup = (formData) => API.post("/api/auth/signup", formData);
+export const signin = (formData) => API.post("/api/auth/signin", formData);

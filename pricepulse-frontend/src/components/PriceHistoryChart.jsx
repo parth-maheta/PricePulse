@@ -27,13 +27,13 @@ function PriceHistoryChart({ data }) {
   }
 
   const sortedData = [...data].sort(
-    (a, b) => new Date(a.checkedAt) - new Date(b.checkedAt)
+    (a, b) => new Date(a.date) - new Date(b.date)
   );
 
   const labels = sortedData.map((point) => {
     try {
-      if (!point.checkedAt) throw new Error("Missing date");
-      const parsedDate = new Date(point.checkedAt);
+      if (!point.date) throw new Error("Missing date");
+      const parsedDate = new Date(point.date);
       if (isNaN(parsedDate)) throw new Error("Invalid date format");
       return parsedDate.toLocaleDateString("en-IN", {
         day: "numeric",
@@ -41,7 +41,7 @@ function PriceHistoryChart({ data }) {
         year: "numeric",
       });
     } catch (err) {
-      console.warn("Date parse error:", point.checkedAt);
+      console.warn("Date parse error:", point.date);
       return "Invalid Date";
     }
   });
