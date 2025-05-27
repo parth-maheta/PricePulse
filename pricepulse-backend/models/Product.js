@@ -6,12 +6,12 @@ const priceHistorySchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, required: true }, // Change here from ObjectId to String
   url: { type: String, required: true },
   title: { type: String, required: true },
   image: { type: String },
   currentPrice: { type: Number, required: true },
-  priceHistory: [priceHistorySchema], // <-- Use it here, after definition
+  priceHistory: [priceHistorySchema],
   lastChecked: { type: Date },
 });
 

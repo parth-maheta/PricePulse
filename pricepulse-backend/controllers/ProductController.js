@@ -1,3 +1,5 @@
+const Product = require("../models/Product");
+const { scrapeAmazonProduct } = require("../scraper/amazonScraper");
 exports.trackProduct = async (req, res) => {
   const { url } = req.body;
 
