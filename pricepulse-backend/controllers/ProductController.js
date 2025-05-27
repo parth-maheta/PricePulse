@@ -1,6 +1,3 @@
-const Product = require("../models/Product");
-const { scrapeAmazonProduct } = require("../scraper/amazonScraper");
-
 exports.trackProduct = async (req, res) => {
   const { url } = req.body;
 
@@ -9,7 +6,13 @@ exports.trackProduct = async (req, res) => {
   }
 
   try {
-    console.log("User ID:", req.userId);
+    // Get userId from Clerk auth info attached to request by middleware
+    const userId = req.auth?.userId || req.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    console.log("User ID:", userId);
     console.log("Tracking product URL:", url);
 
     const scrapedData = await scrapeAmazonProduct(url);
@@ -19,28 +22,26 @@ exports.trackProduct = async (req, res) => {
       return res.status(500).json({ error: "Failed to scrape product data" });
     }
 
-    // Check required scraped data fields
     const { price, title, image } = scrapedData;
     if (price == null || !title) {
       console.error("Scraped data missing required fields:", scrapedData);
       return res.status(500).json({ error: "Scraped data incomplete" });
     }
 
-    // Find product for this user and URL
-    let product = await Product.findOne({ url, userId: req.userId });
+    let product = await Product.findOne({ url, userId });
 
     if (product) {
       product.currentPrice = price;
       product.title = title;
-      product.image = image || product.image; // update image if scraped
+      product.image = image || product.image;
       product.lastChecked = new Date();
       product.priceHistory.push({
-        price: price,
+        price,
         checkedAt: new Date(),
       });
     } else {
       product = new Product({
-        userId: req.userId,
+        userId,
         url,
         title,
         currentPrice: price,

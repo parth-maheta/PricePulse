@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
+const clerkAuth = require("../middleware/clerkAuth"); // Use Clerk middleware
 const Product = require("../models/Product");
 const {
   trackProduct,
@@ -8,9 +8,9 @@ const {
 } = require("../controllers/ProductController");
 
 // Get all products for logged in user
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", clerkAuth, async (req, res) => {
   try {
-    const products = await Product.find({ userId: req.userId });
+    const products = await Product.find({ userId: req.auth.userId }); // use Clerk userId
     res.json(products);
   } catch (err) {
     console.error(err);
@@ -18,7 +18,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-// Track new product (example, adjust controller to accept userId)
-router.post("/", authMiddleware, trackProduct);
+// Track new product (pass through Clerk auth)
+router.post("/", clerkAuth, trackProduct);
 
 module.exports = router;

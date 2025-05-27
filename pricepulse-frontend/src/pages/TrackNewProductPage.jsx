@@ -1,13 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import InputForm from "../components/InputForm";
 import PriceHistoryChart from "../components/PriceHistoryChart";
 import axios from "axios";
-import AuthContext from "../components/AuthContext";
+import { useAuth, SignIn } from "@clerk/clerk-react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 export default function TrackNewProductPage() {
-  const { user } = useContext(AuthContext);
+  const { isSignedIn, getToken } = useAuth();
   const [trackedProduct, setTrackedProduct] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [loadingAlerts, setLoadingAlerts] = useState(false);
@@ -17,9 +17,10 @@ export default function TrackNewProductPage() {
     setLoadingAlerts(true);
 
     try {
+      const token = await getToken();
       const config = {
         headers: {
-          Authorization: `Bearer ${user?.token}`,
+          Authorization: `Bearer ${token}`,
         },
         params: { productUrl: product.url },
       };
@@ -32,6 +33,10 @@ export default function TrackNewProductPage() {
       setLoadingAlerts(false);
     }
   };
+
+  if (!isSignedIn) {
+    return <SignIn path="/signin" routing="path" />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-violet-100 text-gray-900 p-4 sm:p-6 lg:p-10">
@@ -77,6 +82,36 @@ export default function TrackNewProductPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+{
+  trackedProduct && (
+    <div className="mt-8">
+      <h2 className="text-xl sm:text-2xl font-semibold text-indigo-700 mb-4">
+        Alerts for this Product
+      </h2>
+
+      {loadingAlerts ? (
+        <p>Loading alerts...</p>
+      ) : alerts.length === 0 ? (
+        <p className="text-gray-500">No alerts scheduled for this product.</p>
+      ) : (
+        <ul className="space-y-2">
+          {alerts.map((alert) => (
+            <li
+              key={alert._id}
+              className="bg-indigo-50 p-3 rounded-md shadow-sm"
+            >
+              <p>
+                Target Price:{" "}
+                <span className="font-semibold">₹{alert.targetPrice}</span>
+              </p>
+              <p>Status: {alert.alertSent ? "Sent ✅" : "Scheduled ⏳"}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

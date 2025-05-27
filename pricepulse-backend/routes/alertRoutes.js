@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
+const clerkAuth = require("../middleware/clerkAuth"); // <-- use Clerk middleware here
 const Alert = require("../models/Alert");
 
-router.post("/create", authMiddleware, async (req, res) => {
+router.post("/create", clerkAuth, async (req, res) => {
   const { productUrl, targetPrice, userEmail, productName, productImage } =
     req.body;
 
@@ -15,7 +15,7 @@ router.post("/create", authMiddleware, async (req, res) => {
 
   try {
     const alert = new Alert({
-      userId: req.userId,
+      userId: req.auth.userId, // use Clerk userId
       productUrl,
       targetPrice,
       userEmail,
@@ -32,10 +32,9 @@ router.post("/create", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", clerkAuth, async (req, res) => {
   try {
-    // Optional filter by productUrl query param
-    const filter = { userId: req.userId };
+    const filter = { userId: req.auth.userId }; // use Clerk userId
     if (req.query.productUrl) filter.productUrl = req.query.productUrl;
 
     const alerts = await Alert.find(filter);

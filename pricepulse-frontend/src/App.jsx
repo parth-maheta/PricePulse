@@ -7,7 +7,6 @@ import Navbar from "./pages/Navbar";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 
-import { AuthProvider } from "./components/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {

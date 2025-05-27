@@ -1,14 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../assets/logo.png";
-import AuthContext from "../components/AuthContext";
+import { useUser, useClerk } from "@clerk/clerk-react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, signoutUser } = useContext(AuthContext);
+  const { user } = useUser();
+  const { clerk } = useClerk();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,8 +23,8 @@ export default function Navbar() {
     location.pathname
   );
 
-  const handleLogout = () => {
-    signoutUser();
+  const handleLogout = async () => {
+    await clerk.signOut();
     setMenuOpen(false);
     setDropdownOpen(false);
     navigate("/");
@@ -104,7 +105,10 @@ export default function Navbar() {
                 title="User"
               >
                 <img
-                  src={`https://api.dicebear.com/9.x/fun-emoji/svg/default.svg`}
+                  src={
+                    user.profileImageUrl ||
+                    "https://api.dicebear.com/9.x/fun-emoji/svg/default.svg"
+                  }
                   alt="User avatar"
                   className="w-full h-full object-cover"
                 />

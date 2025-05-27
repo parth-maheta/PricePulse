@@ -1,4 +1,6 @@
-const authMiddleware = (req, res, next) => {
+const { verifyToken } = require("@clerk/clerk-sdk-node");
+
+const clerkAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     console.log("No Authorization header");
@@ -12,11 +14,15 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    // Verify token using Clerk SDK
+    const verifiedToken = await verifyToken(token);
+    // Clerk user ID is in 'sub' field of the verified token
+    req.auth = { userId: verifiedToken.sub };
     next();
   } catch (err) {
-    console.log("JWT verification error:", err.message);
+    console.log("Clerk token verification error:", err.message);
     return res.status(401).json({ message: "Token is not valid" });
   }
 };
+
+module.exports = clerkAuth;

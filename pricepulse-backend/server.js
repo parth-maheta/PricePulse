@@ -5,7 +5,6 @@ const cors = require("cors");
 const { startScheduler } = require("./scheduler");
 const productRoutes = require("./routes/productRoutes");
 const alertRoutes = require("./routes/alertRoutes");
-const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -24,7 +23,6 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/alerts", alertRoutes);
-app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,19 +1,12 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signin } from "../api/auth";
-import AuthContext from "../components/AuthContext";
+import { useSignIn } from "@clerk/clerk-react";
 
 export default function Signin() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { user, signinUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (user?.token) {
-      navigate("/tracked-products");
-    }
-  }, [user, navigate]);
+  const { signIn, setSession } = useSignIn();
+  const [formData, setFormData] = React.useState({ email: "", password: "" });
+  const [error, setError] = React.useState(null);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,12 +15,17 @@ export default function Signin() {
     e.preventDefault();
     setError(null);
     try {
-      const { data } = await signin(formData);
-      signinUser(data);
+      const result = await signIn.create({
+        identifier: formData.email,
+        password: formData.password,
+      });
+
+      // Set session to finalize login
+      await setSession(result.createdSessionId);
+
       navigate("/tracked-products");
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Signin failed");
+      setError(err.errors ? err.errors[0]?.message : "Signin failed");
     }
   };
 

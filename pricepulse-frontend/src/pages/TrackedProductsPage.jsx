@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import PriceHistoryChart from "../components/PriceHistoryChart";
+import { useAuth, useUser, SignIn } from "@clerk/clerk-react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 function ProductCard({ product }) {
   return (
     <div className="bg-white shadow-lg rounded-xl p-6 hover:shadow-indigo-300 transition-shadow duration-300 flex flex-col justify-between h-full">
-      {/* Image & Text Section */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:gap-6">
         <img
           src={product.image}
@@ -116,11 +116,14 @@ export default function TrackedProductsPage() {
   const [errorProducts, setErrorProducts] = useState(null);
   const [errorAlerts, setErrorAlerts] = useState(null);
 
+  const { isSignedIn, getToken } = useAuth();
+  const { user } = useUser();
+
   const fetchProducts = useCallback(async () => {
     setLoadingProducts(true);
     setErrorProducts(null);
     try {
-      const token = localStorage.getItem("token");
+      const token = await getToken();
       const res = await axios.get(`${BASE_URL}/api/products`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -131,13 +134,13 @@ export default function TrackedProductsPage() {
     } finally {
       setLoadingProducts(false);
     }
-  }, []);
+  }, [getToken]);
 
   const fetchAlerts = useCallback(async () => {
     setLoadingAlerts(true);
     setErrorAlerts(null);
     try {
-      const token = localStorage.getItem("token");
+      const token = await getToken();
       const res = await axios.get(`${BASE_URL}/api/alerts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -148,12 +151,18 @@ export default function TrackedProductsPage() {
     } finally {
       setLoadingAlerts(false);
     }
-  }, []);
+  }, [getToken]);
 
   useEffect(() => {
-    fetchProducts();
-    fetchAlerts();
-  }, [fetchProducts, fetchAlerts]);
+    if (isSignedIn) {
+      fetchProducts();
+      fetchAlerts();
+    }
+  }, [fetchProducts, fetchAlerts, isSignedIn]);
+
+  if (!isSignedIn) {
+    return <SignIn path="/signin" routing="path" />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-violet-100 text-gray-900 p-4 sm:p-10 pt-16">

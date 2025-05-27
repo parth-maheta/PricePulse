@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import AuthContext from "../components/AuthContext";
+import { useAuth } from "@clerk/clerk-react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
 export default function InputForm({ onProductTracked }) {
-  const { user } = useContext(AuthContext);
+  const { getToken } = useAuth();
   const [url, setUrl] = useState("");
   const [targetPrice, setTargetPrice] = useState("");
   const [email, setEmail] = useState("");
@@ -52,10 +53,12 @@ export default function InputForm({ onProductTracked }) {
     setLoading(true);
 
     try {
-      // Config with Authorization header
+      // Get the Clerk token asynchronously
+      const token = await getToken();
+
       const config = {
         headers: {
-          Authorization: `Bearer ${user?.token}`,
+          Authorization: `Bearer ${token}`,
         },
       };
 
