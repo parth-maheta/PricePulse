@@ -38,6 +38,12 @@ export default function InputForm({ onProductTracked }) {
     try {
       // Get the Clerk token asynchronously
       const token = await getToken();
+      if (!token) {
+        console.error("❌ No token received from Clerk.");
+        toast.error("You must be signed in to track products.");
+        setLoading(false);
+        return;
+      }
 
       const config = {
         headers: {

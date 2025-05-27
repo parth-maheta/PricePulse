@@ -1,13 +1,18 @@
-
+# Base image with all dependencies for Playwright
 FROM mcr.microsoft.com/playwright:v1.52.0-jammy
 
+# Set working directory
 WORKDIR /app
 
-COPY . .
-
+# Install dependencies first for caching
+COPY package*.json ./
 RUN npm install
 
+# Copy the rest of the app
+COPY . .
+
+# Expose the port your app runs on
 EXPOSE 5000
 
-# Start your app
+# Default command to start your server
 CMD ["npm", "start"]
