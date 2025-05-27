@@ -14,29 +14,12 @@ export default function InputForm({ onProductTracked }) {
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
 
-  const isValidAmazonUrl = (inputUrl) => {
-    try {
-      const parsed = new URL(inputUrl);
-      return (
-        parsed.hostname.includes("amazon.") &&
-        (parsed.pathname.includes("/dp/") || parsed.pathname.includes("/gp/"))
-      );
-    } catch {
-      return false;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     if (!url) {
       setError("Please enter a product URL.");
-      return;
-    }
-
-    if (!isValidAmazonUrl(url)) {
-      setError("Please enter a valid Amazon product URL.");
       return;
     }
 

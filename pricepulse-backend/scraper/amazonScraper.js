@@ -1,4 +1,5 @@
 const { chromium } = require("playwright");
+const fs = require("fs");
 
 // Resolve shortened Amazon URLs like https://amzn.in/...
 async function resolveAmazonShortUrl(shortUrl) {
@@ -10,8 +11,7 @@ async function resolveAmazonShortUrl(shortUrl) {
       waitUntil: "domcontentloaded",
       timeout: 15000,
     });
-    const fullUrl = page.url(); // Resolves the redirect
-    return fullUrl;
+    return page.url(); // Resolves the redirect
   } catch (err) {
     console.error("Error resolving short URL:", err.message);
     return null;
@@ -33,48 +33,75 @@ async function scrapeAmazonProduct(url) {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
+  // Set user-agent and viewport to mimic a real browser
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  );
+  await page.setViewportSize({ width: 1280, height: 800 });
+
   try {
     await page.goto(url, { timeout: 60000, waitUntil: "domcontentloaded" });
 
-    await page.waitForSelector("#productTitle", { timeout: 10000 });
-    await page.waitForSelector("#landingImage, #imgTagWrapperId img", {
-      timeout: 10000,
-    });
+    let title = null;
+    let image = null;
+    let price = null;
 
-    const productData = await page.evaluate(() => {
-      const title = document.querySelector("#productTitle")?.innerText.trim();
-      const image = document.querySelector(
-        "#landingImage, #imgTagWrapperId img"
-      )?.src;
-
-      const priceEls = [
-        ...document.querySelectorAll(".a-price .a-offscreen"),
-        document.querySelector("#priceblock_ourprice"),
-        document.querySelector("#priceblock_dealprice"),
-      ].filter(Boolean);
-
-      let priceText = null;
-      for (const el of priceEls) {
-        if (el.innerText && el.innerText.trim() !== "") {
-          priceText = el.innerText.trim();
-          break;
-        }
-      }
-
-      const price = priceText
-        ? parseFloat(priceText.replace(/[₹,]/g, ""))
-        : null;
-
-      return { title, image, price };
-    });
-
-    if (!productData.title || productData.price === null) {
-      throw new Error("Failed to scrape product data");
+    try {
+      await page.waitForSelector("#productTitle", {
+        timeout: 10000,
+        state: "visible",
+      });
+      title = await page.$eval("#productTitle", (el) => el.innerText.trim());
+    } catch {
+      console.warn("⚠️ Could not extract title");
     }
 
-    return productData;
+    try {
+      await page.waitForSelector("#landingImage, #imgTagWrapperId img", {
+        timeout: 10000,
+        state: "attached",
+      });
+      image = await page.$eval(
+        "#landingImage, #imgTagWrapperId img",
+        (el) => el.src
+      );
+    } catch {
+      console.warn("⚠️ Could not extract image");
+    }
+
+    try {
+      const priceText = await page.evaluate(() => {
+        const els = [
+          ...document.querySelectorAll(".a-price .a-offscreen"),
+          document.querySelector("#priceblock_ourprice"),
+          document.querySelector("#priceblock_dealprice"),
+        ].filter(Boolean);
+
+        for (const el of els) {
+          if (el.innerText && el.innerText.trim() !== "") {
+            return el.innerText.trim();
+          }
+        }
+        return null;
+      });
+
+      price = priceText ? parseFloat(priceText.replace(/[₹,]/g, "")) : null;
+    } catch {
+      console.warn("⚠️ Could not extract price");
+    }
+
+    if (!title || price === null) {
+      throw new Error(
+        "Failed to extract product data. Missing title or price."
+      );
+    }
+
+    return { title, image, price };
   } catch (err) {
-    console.error("Scraping Error:", err.message);
+    console.error("❌ Scraping Error:", err.message);
+    await page.screenshot({ path: "error_screenshot.png", fullPage: true });
+    const html = await page.content();
+    fs.writeFileSync("error_page.html", html);
     return null;
   } finally {
     await browser.close();
