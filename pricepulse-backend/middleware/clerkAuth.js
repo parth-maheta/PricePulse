@@ -14,8 +14,11 @@ const clerkAuth = async (req, res, next) => {
   }
 
   try {
-    // Verify token using Clerk SDK
-    const verifiedToken = await verifyToken(token);
+    // Verify token using Clerk SDK with explicit apiKey from env variable
+    const verifiedToken = await verifyToken(token, {
+      apiKey: process.env.CLERK_API_KEY,
+    });
+
     // Clerk user ID is in 'sub' field of the verified token
     req.auth = { userId: verifiedToken.sub };
     next();
