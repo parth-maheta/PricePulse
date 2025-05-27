@@ -79,39 +79,43 @@ export default function TrackNewProductPage() {
                 </div>
               </div>
             </div>
+
+            {/* ✅ Add alerts section here */}
+            <div className="mt-8">
+              <h2 className="text-xl sm:text-2xl font-semibold text-indigo-700 mb-4">
+                Alerts for this Product
+              </h2>
+
+              {loadingAlerts ? (
+                <p>Loading alerts...</p>
+              ) : alerts.length === 0 ? (
+                <p className="text-gray-500">
+                  No alerts scheduled for this product.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {alerts.map((alert) => (
+                    <li
+                      key={alert._id}
+                      className="bg-indigo-50 p-3 rounded-md shadow-sm"
+                    >
+                      <p>
+                        Target Price:{" "}
+                        <span className="font-semibold">
+                          ₹{alert.targetPrice}
+                        </span>
+                      </p>
+                      <p>
+                        Status: {alert.alertSent ? "Sent ✅" : "Scheduled ⏳"}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         )}
       </div>
-    </div>
-  );
-}
-{
-  trackedProduct && (
-    <div className="mt-8">
-      <h2 className="text-xl sm:text-2xl font-semibold text-indigo-700 mb-4">
-        Alerts for this Product
-      </h2>
-
-      {loadingAlerts ? (
-        <p>Loading alerts...</p>
-      ) : alerts.length === 0 ? (
-        <p className="text-gray-500">No alerts scheduled for this product.</p>
-      ) : (
-        <ul className="space-y-2">
-          {alerts.map((alert) => (
-            <li
-              key={alert._id}
-              className="bg-indigo-50 p-3 rounded-md shadow-sm"
-            >
-              <p>
-                Target Price:{" "}
-                <span className="font-semibold">₹{alert.targetPrice}</span>
-              </p>
-              <p>Status: {alert.alertSent ? "Sent ✅" : "Scheduled ⏳"}</p>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }
