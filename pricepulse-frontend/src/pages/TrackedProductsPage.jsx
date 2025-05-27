@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import PriceHistoryChart from "../components/PriceHistoryChart";
-import { useAuth, useUser, SignIn } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -117,7 +117,6 @@ export default function TrackedProductsPage() {
   const [errorAlerts, setErrorAlerts] = useState(null);
 
   const { isSignedIn, getToken } = useAuth();
-  const { user } = useUser();
 
   const fetchProducts = useCallback(async () => {
     setLoadingProducts(true);
@@ -159,10 +158,6 @@ export default function TrackedProductsPage() {
       fetchAlerts();
     }
   }, [fetchProducts, fetchAlerts, isSignedIn]);
-
-  if (!isSignedIn) {
-    return <SignIn path="/signin" routing="path" />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-violet-100 text-gray-900 p-4 sm:p-10 pt-16">

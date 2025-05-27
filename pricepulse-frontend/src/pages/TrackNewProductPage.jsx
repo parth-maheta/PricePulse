@@ -63,13 +63,13 @@ export default function TrackNewProductPage() {
               </div>
 
               <div className="flex-1">
-                <h3 className="text-lg sm:text-xl font-semibold text-indigo-800 mb-2">
+                <h3 className="text-lg sm:text-xl font-semibold text-indigo-800 mb-2 break-words">
                   {trackedProduct.title}
                 </h3>
                 <p className="text-indigo-600 font-bold text-base sm:text-lg mb-1">
                   Current Price: ₹{trackedProduct.currentPrice}
                 </p>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-gray-500 mb-4 break-words">
                   Last Checked:{" "}
                   {new Date(trackedProduct.lastChecked).toLocaleString()}
                 </p>
@@ -80,14 +80,14 @@ export default function TrackNewProductPage() {
               </div>
             </div>
 
-            {/* ✅ Add alerts section here */}
+            {/* Alerts Section */}
             <div className="mt-8">
               <h2 className="text-xl sm:text-2xl font-semibold text-indigo-700 mb-4">
                 Alerts for this Product
               </h2>
 
               {loadingAlerts ? (
-                <p>Loading alerts...</p>
+                <p className="text-center text-indigo-600">Loading alerts...</p>
               ) : alerts.length === 0 ? (
                 <p className="text-gray-500">
                   No alerts scheduled for this product.
@@ -97,7 +97,7 @@ export default function TrackNewProductPage() {
                   {alerts.map((alert) => (
                     <li
                       key={alert._id}
-                      className="bg-indigo-50 p-3 rounded-md shadow-sm"
+                      className="bg-indigo-50 p-3 rounded-md shadow-sm break-words"
                     >
                       <p>
                         Target Price:{" "}
@@ -106,7 +106,16 @@ export default function TrackNewProductPage() {
                         </span>
                       </p>
                       <p>
-                        Status: {alert.alertSent ? "Sent ✅" : "Scheduled ⏳"}
+                        Status:{" "}
+                        <span
+                          className={
+                            alert.alertSent
+                              ? "text-green-600 font-semibold"
+                              : "text-orange-500 font-semibold"
+                          }
+                        >
+                          {alert.alertSent ? "Sent ✅" : "Scheduled ⏳"}
+                        </span>
                       </p>
                     </li>
                   ))}

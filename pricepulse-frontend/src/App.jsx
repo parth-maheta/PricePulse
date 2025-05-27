@@ -1,17 +1,16 @@
 import React from "react";
+import { ClerkProvider, SignIn, SignUp } from "@clerk/clerk-react";
 import {
-  ClerkProvider,
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-} from "@clerk/clerk-react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import TrackedProductsPage from "./pages/TrackedProductsPage";
 import TrackNewProductPage from "./pages/TrackNewProductPage";
 import Navbar from "./pages/Navbar";
-import Signup from "./pages/Signup";
-import Signin from "./pages/Signin";
+import PrivateRoute from "./components/PrivateRoute";
 
 const clerkFrontendApi = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -22,34 +21,37 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Signin />} />
 
+          {/* Clerk's built-in pages */}
+          <Route
+            path="/signin"
+            element={<SignIn routing="path" path="/signin" />}
+          />
+          <Route
+            path="/signup"
+            element={<SignUp routing="path" path="/signup" />}
+          />
+
+          {/* Protected routes */}
           <Route
             path="/tracked-products"
             element={
-              <SignedIn>
+              <PrivateRoute>
                 <TrackedProductsPage />
-              </SignedIn>
+              </PrivateRoute>
             }
           />
           <Route
             path="/track-new"
             element={
-              <SignedIn>
+              <PrivateRoute>
                 <TrackNewProductPage />
-              </SignedIn>
+              </PrivateRoute>
             }
           />
-          {/* Optional: handle signed out */}
-          <Route
-            path="/protected"
-            element={
-              <SignedOut>
-                <RedirectToSignIn />
-              </SignedOut>
-            }
-          />
+
+          {/* Fallback for unknown routes */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </ClerkProvider>
