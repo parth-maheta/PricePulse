@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",
+    "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
+    "cheerio": "^1.1.0",
     "cors": "^2.8.5",
     "cron": "^4.3.0",
     "dotenv": "^16.5.0",
@@ -28,6 +30,8 @@
     "node-cron": "^4.0.7",
     "nodemailer": "^7.0.3",
     "nodemailer-sendgrid": "^1.0.3",
-    "playwright": "^1.52.0"
+    "playwright": "^1.52.0",
+    "playwright-extra": "^4.3.6",
+    "playwright-extra-plugin-stealth": "^0.0.1"
   }
 }
